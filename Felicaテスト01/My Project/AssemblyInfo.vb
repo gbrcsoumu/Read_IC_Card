@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' アセンブリ属性の値を確認します。
 
-<Assembly: AssemblyTitle("Felicaテスト01")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("Felicaテスト01")> 
-<Assembly: AssemblyCopyright("Copyright ©  2019")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTitle("CardReader")>
+<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyCompany("GBRC")>
+<Assembly: AssemblyProduct("CardReader")>
+<Assembly: AssemblyCopyright("Copyright ©  2020")>
+<Assembly: AssemblyTrademark("GBRC")>
 
 <Assembly: ComVisible(False)>
 

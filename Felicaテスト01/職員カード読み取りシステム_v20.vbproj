@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{03BCC0B9-0865-4E12-887F-E30530767D3D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>GBRC出退勤読み取りシステム.My.MyApplication</StartupObject>
-    <RootNamespace>GBRC出退勤読み取りシステム</RootNamespace>
-    <AssemblyName>GBRC出退勤読み取りシステム</AssemblyName>
+    <StartupObject>CardReader.My.MyApplication</StartupObject>
+    <RootNamespace>CardReader</RootNamespace>
+    <AssemblyName>CardReader</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -35,17 +35,17 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>GBRC出退勤読み取りシステム.xml</DocumentationFile>
+    <DocumentationFile>CardReader.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>GBRC出退勤読み取りシステム.xml</DocumentationFile>
+    <DocumentationFile>CardReader.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
