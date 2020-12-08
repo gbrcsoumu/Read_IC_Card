@@ -20,7 +20,7 @@ Public Class CardInputForm
 
     Private Sql_Command As String, Sql_Command2 As String, Sql_Command3 As String
     Private Sql_Command_Last As String, Sql_Command2_Last As String, Sql_Command3_Last As String
-
+    Private OutTime As DateTime
     Private Sql1 As New Queue()
     Private Sql2 As New Queue()
     Private Sql3 As New Queue()
@@ -45,7 +45,7 @@ Public Class CardInputForm
         Me.StartPosition = FormStartPosition.CenterScreen
 
         'Me.CardMasterKeyString = "GBRC 2020"
-        TimeTimer1.Interval = 1000
+        TimeTimer1.Interval = 1000      ' 時計表示タイマー
         TimeTimer1.Enabled = True
         If TimeSpan.Compare(DateTime.Now.TimeOfDay, New TimeSpan(12, 0, 0)) = -1 Then
             Me.Mode = 1
@@ -64,7 +64,7 @@ Public Class CardInputForm
         ModeChangeTimer2.Enabled = True
         DataBaseTimer.Interval = 8333
         DataBaseTimer.Enabled = True
-        First_flag = True
+        First_flag = True   ' カードの読み取りが初回の場合はTrue
         mode_chage_flag = False
         hostname = System.Net.Dns.GetHostName
         System.Diagnostics.Debug.WriteLine(hostname)
@@ -98,9 +98,6 @@ Public Class CardInputForm
 
         ReadCard()
 
-        'Display1 = New Display
-        ''player = New System.Media.SoundPlayer("C:\Windows\Media\Windows Information Bar.wav")
-        'player.Play()
     End Sub
 
     Private Sub SetDic1()
@@ -522,16 +519,12 @@ Public Class CardInputForm
     Private Sub TxtMessage_Text2(ByVal value As String)
 
         Dim db As New OdbcDbIf
-        'Dim tb As DataTable, tb2 As DataTable, tb3 As DataTable
-        Dim t1 As String, D1 As String, n1 As String, S1 As String, t2 As String, t3 As String
-        'Dim Sql_Command2 As String
-        'Dim Sql_Command3 As String
-        'Dim n As Integer, n2 As Integer
+
+        Dim t1 As String, D1 As String, n1 As String, S1 As String, t2 As String
+
         Dim A As String
         Dim timenow As DateTime
-        Dim ts As TimeSpan
-        'Dim st1 As String, scode As Integer, ed1 As String, ecode As Integer, D2 As String, go1 As String
-        'Dim time_st As DateTime, time_ed As DateTime, time_go As DateTime
+
         value = value.Replace(vbCrLf, "")
 
         If value <> "" Then
@@ -540,49 +533,12 @@ Public Class CardInputForm
             timenow = DateTime.Now()
             t1 = timenow.ToString("HH:mm:ss")
             D1 = DateTime.Now.ToString("yyyy-MM-dd")
-            'D2 = DateTime.Now.ToString("yyyy/MM/dd")
+
             A = "職員番号：" + value
             t2 = Me.Label1.Text
-            'db.Connect()
-
-            'Sql_Command = "SELECT ""氏名"" FROM """ + MemberNameTable + """ WHERE ""職員番号"" = '" & value & "'"
-            'tb = db.ExecuteSql(Sql_Command)
-            'n = tb.Rows.Count
-
-            'Sql_Command2 = "SELECT * FROM """ + DateLogTable + """ WHERE (""職員番号"" = '" & value & "' AND ""日付"" = DATE '" + D1 + " ')"
-            'tb2 = db.ExecuteSql(Sql_Command2)
-            'n2 = tb2.Rows.Count
-
-            'If n2 > 0 Then
-            '    st1 = tb2.Rows(0).Item("出勤時刻").ToString()
-            '    time_st = DateTime.Parse(D2 + " " + st1)
-            '    scode = tb2.Rows(0).Item("出勤コード")
-            '    ed1 = tb2.Rows(0).Item("退勤時刻").ToString()
-            '    time_ed = DateTime.Parse(D2 + " " + ed1)
-            '    ecode = tb2.Rows(0).Item("退勤コード")
-            '    go1 = tb2.Rows(0).Item("外出時刻").ToString()
-
-            '    If go1 <> "" Then
-            '        time_go = DateTime.Parse(D2 + " " + go1)
-            '        t3 = time_go.ToString("HH:mm:ss")
-            '    Else
-            '        t3 = ""
-            '    End If
-            'Else
-            '    st1 = ""
-            '    time_st = timenow
-            '    scode = 0
-            '    ed1 = ""
-            '    time_ed = timenow
-            '    ecode = 0
-
-            '    t3 = ""
-            'End If
-
 
             S1 = ""
-            'If n > 0 Then
-            'n1 = tb.Rows(0).Item("氏名").ToString()
+
             n1 = Dic3(value)
             A += "、氏名：" + n1
 
@@ -626,127 +582,16 @@ Public Class CardInputForm
             Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + S1 + "',DATE '" + D1 + "',TIME '"
             Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
 
-            Dim code1 As String
-            Sql_Command2 = ""
-            Sql_Command3 = ""
-            'If n2 = 0 Then
-            '    Select Case Me.Mode
-            '        Case 1
-            '            If t2 <> "" Then
-            '                code1 = Dic1(t2)
-            '            Else
-            '                code1 = "0"
-            '            End If
-            '            Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""出勤時刻"",""出勤コード"")"
-            '            Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-            '            Sql_Command2 += t1 + "'," + code1 + ")"
-            '        Case 2
-
-            '        Case 3
-
-            '        Case 4
-            '            If t2 <> "" Then
-            '                code1 = Dic2(t2)
-            '            Else
-            '                code1 = "0"
-            '            End If
-            '            Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""退勤時刻"",""退勤コード"")"
-            '            Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-            '            Sql_Command2 += t1 + "'," + code1 + ")"
-            '    End Select
-
-            'Else
-            Select Case Me.Mode
-                     'Sql_Command = "UPDATE """ + MemberNameTable + """ SET IDm = '" + Me.IDm(data_n) + "' WHERE ""職員番号"" = '" + Me.No(data_n) + "'"
-                Case 1
-                    If t2 <> "" Then
-                        code1 = Dic1(t2)
-                    Else
-                        code1 = "0"
-                    End If
-                    Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""出勤時刻"" = TIME '" + t1 + "' ,""出勤コード"" = " + code1
-                    Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
-
-                Case 2
-                    Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""外出時刻"" = TIME '" + t1 + "'"
-                    Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
-
-                    Dim OutKind As String
-                    If Me.OfficialRadioButton.Checked Then
-                        OutKind = "公外"
-                    Else
-                        OutKind = "私外"
-                    End If
-                    Sql_Command3 = "INSERT INTO """ + GooutTable + """ (""職員番号"",""日付"",""時刻"",""種類"")"
-                    Sql_Command3 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-                    Sql_Command3 += t1 + "','" + OutKind + "')"
-                Case 3
-
-                    Sql_Command3 = "UPDATE """ + GooutTable + """ SET ""戻り時刻"" = TIME '" + t1 + "'"
-                    Sql_Command3 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "' AND ""時刻"" = TIME '" + t3 + "'"
-
-                Case 4
-                    If t2 <> "" Then
-                        code1 = Dic2(t2)
-                    Else
-                        code1 = "0"
-                    End If
-                    Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""退勤時刻"" = TIME '" + t1 + "' ,""退勤コード"" = " + code1
-                    Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
-
-            End Select
-
-
-
-            'End If
-
             If Sql_Command <> Sql_Command_Last Then
                 Sql1.Enqueue(Sql_Command)
                 Sql_Command_Last = Sql_Command
             End If
 
-            If Sql_Command2 <> "" Then
-                If Sql_Command2 <> Sql_Command2_Last Then
-                    Sql2.Enqueue(Sql_Command2)
-                    Sql_Command2_Last = Sql_Command2
-                End If
-            Else
-                Sql2.Enqueue(Sql_Command2)
-                Sql_Command2_Last = Sql_Command2
-            End If
-
-            If Sql_Command3 <> "" Then
-                If Sql_Command3 <> Sql_Command3_Last Then
-                    Sql3.Enqueue(Sql_Command3)
-                    Sql_Command3_Last = Sql_Command3
-                End If
-            Else
-                Sql3.Enqueue(Sql_Command3)
-                Sql_Command3_Last = Sql_Command3
-            End If
-            'ts = timenow - Old_time
-            'If ts.TotalSeconds > TimeLag Then
-            '    tb = db.ExecuteSql(Sql_Command)
-            '    System.Diagnostics.Debug.WriteLine(Sql_Command)
-            '    If Sql_Command2 <> "" Then
-            '        tb2 = db.ExecuteSql(Sql_Command2)
-            '        System.Diagnostics.Debug.WriteLine(Sql_Command2)
-            '    End If
-            '    If Sql_Command3 <> "" Then
-            '        tb3 = db.ExecuteSql(Sql_Command3)
-            '        System.Diagnostics.Debug.WriteLine(Sql_Command3)
-            '    End If
-            '    Old_time = timenow
-            'End If
-
             Display1.On1()
 
-                Read_flag = False
-                'Else
-                '    A = "カードが読み取れません"
-                'End If
-                Me.TextBox1.Text = A
-            'db.Disconnect()
+            Read_flag = False
+
+            Me.TextBox1.Text = A
 
             Busy = False
             DataBaseTimer.Enabled = True
@@ -755,9 +600,9 @@ Public Class CardInputForm
 
     Private Sub DataBaseExecute()
         Dim db As New OdbcDbIf
-        Dim tb As DataTable, tb2 As DataTable, tb3 As DataTable
+        Dim tb As DataTable
 
-        Dim com1 As String, com2 As String, com3 As String
+        Dim com1 As String
         DataBaseTimer.Enabled = False
         If Busy = False Then
             Dim n As Integer = Sql1.Count
@@ -765,19 +610,10 @@ Public Class CardInputForm
                 db.Connect()
                 For i As Integer = 0 To n - 1
                     com1 = Sql1.Dequeue()
-                    com2 = Sql2.Dequeue()
-                    com3 = Sql3.Dequeue()
 
                     tb = db.ExecuteSql(com1)
                     System.Diagnostics.Debug.WriteLine(com1)
-                    'If com2 <> "" Then
-                    '    tb2 = db.ExecuteSql(com2)
-                    '    System.Diagnostics.Debug.WriteLine(com2)
-                    'End If
-                    'If com3 <> "" Then
-                    '    tb3 = db.ExecuteSql(com3)
-                    '    System.Diagnostics.Debug.WriteLine(com3)
-                    'End If
+
                 Next
                 db.Disconnect()
             End If
@@ -789,25 +625,33 @@ Public Class CardInputForm
 
 
 
-    Private Sub Timer3_True()
+    Private Sub AfterInputTimer_True()
 
         Me.AfterInputTimer.Enabled = True
 
     End Sub
 
     Private Sub Thread_PCSC()
+        '
+        '   IC カードの読み取りルーチン
+        '
+        '       ①ICカードから職員番号を読み取り、データベースへのSQLコマンドを作成する。
+        '       ②次の読み取りのためのタイマーを起動する。
+        '
         '----------
         ' 変数定義
         '----------
-        Dim pcsc As New ClsWinSCard(CardMasterKeyString)
+        Dim pcsc As New ClsWinSCard(CardMasterKeyString)    ' ICカード操作用オブジェクトの作成
         Dim msg As String = ""
         Dim flag1 As Boolean
 
         '----------------
-        ' Delegateの作成
+        ' 別スレッドからサブルーチンを呼び出すためのDelegateの作成
         '----------------
+        '  データベースへ送信するSQLコマンドの作成サブルーチン
         Dim msg_txt As New txtMessage_Text_Delegate(AddressOf TxtMessage_Text2)
-        Dim timer3 As New Timer3_Enable_Delegate(AddressOf Timer3_True)
+        '  次のICカード読み取りまでのタイマーの起動サブルーチン
+        Dim AfterInputtimerDelegate As New Timer3_Enable_Delegate(AddressOf AfterInputTimer_True)
 
         '----------------
         ' ボタンを無効化
@@ -823,27 +667,29 @@ Public Class CardInputForm
         ' FelicaのIDm,PMM、MifareのUIDを取得
         '------------------------------------
         Do
-            If pcsc.GetNoWithMac_A() Then
-                If pcsc.IsFelica Then
+            ' カードを読み取るまで無限に繰り返す。
+
+            If pcsc.GetNoWithMac_A() Then   ' 暗号付きのカードの読み取り
+                If pcsc.IsFelica Then   ' フェリカ以外のカードは読み取らない。
                     Me.No = pcsc.S_PAD0.Trim()
                     System.Media.SystemSounds.Beep.Play()
 
                 End If
                 If Me.No > 0 Then
-                    Me.Invoke(msg_txt, New Object() {Me.No})
-                    First_flag = False
+                    Me.Invoke(msg_txt, New Object() {Me.No})    ' 職員番号でSQLコマンドを作成
+                    First_flag = False                          ' 初回フラグをFalseにする。
                     flag1 = True
                 End If
 
             Else
 
-                Me.Invoke(msg_txt, New Object() {msg + vbNewLine})
+                'Me.Invoke(msg_txt, New Object() {msg + vbNewLine})
                 flag1 = False
             End If
             If (First_flag = False And flag1 = True) Then Exit Do
         Loop
 
-        Me.Invoke(timer3, New Object() {})
+        Me.Invoke(AfterInputtimerDelegate, New Object() {})  ' 次の読み取りのためのタイマーを起動する。
 
     End Sub
 
@@ -854,7 +700,11 @@ Public Class CardInputForm
 
 
     Private Sub ReadCard()
-        If Read_flag = False Then
+        '
+        ' ICカードの読み取り
+        '　　実行中、画面が固まってしまうので実際の処理は別スレッドでバックグラウンド実行する
+        '
+        If Read_flag = False Then   ' すでに読み取り中（Read_flag = True）の場合は実行しない
             'Me.TextBox1.Text = ""
             Me.Label1.Text = ""
             'PC/SC通信を別スレッドで実行
@@ -864,17 +714,21 @@ Public Class CardInputForm
             'スレッド開始
             th.Start()
             Read_flag = True
-            System.Diagnostics.Debug.WriteLine("card read")
+            'System.Diagnostics.Debug.WriteLine("card read")
             'Display1.On1()
         End If
     End Sub
 
 
-    Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles AfterInputTimer.Tick
+    Private Sub AfterInputTimer_Tick(sender As Object, e As EventArgs) Handles AfterInputTimer.Tick
+        '
+        '   カード読み取り後の再読み込み
+        '
+        '
         If TimeSpan.Compare(DateTime.Now.TimeOfDay, New TimeSpan(12, 0, 0)) = -1 Then
-            Me.Mode = 1
+            Me.Mode = 1     ' 午前中は出勤モード
         Else
-            Me.Mode = 4
+            Me.Mode = 4     ' 午後は退勤モード
         End If
         'Me.Mode = 1
         Button_change(Me.Mode)
@@ -886,12 +740,14 @@ Public Class CardInputForm
         '    'Timer4.Enabled = True
         'End If
         'Timer2.Enabled = True
-        ReadCard()
+
         AfterInputTimer.Enabled = False
+        ReadCard()
+
         System.Diagnostics.Debug.WriteLine("timer 3")
     End Sub
 
-    Private Sub Timer4_Tick(sender As Object, e As EventArgs) Handles ModeChangeTimer.Tick
+    Private Sub ModeChangeTimer_Tick(sender As Object, e As EventArgs) Handles ModeChangeTimer.Tick
         'Timer3.Enabled = False
         If TimeSpan.Compare(DateTime.Now.TimeOfDay, New TimeSpan(12, 0, 0)) = -1 Then
             Me.Mode = 1
