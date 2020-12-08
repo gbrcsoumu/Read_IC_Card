@@ -6,7 +6,7 @@ Imports System.Collections
 Public Class CardInputForm
 
     Private Mode As Integer
-    Private CardMasterKeyString As String
+    'Private CardMasterKeyString As String
     Private No As String
     Private th As Thread, th2 As Thread
     Private hostname As String, IP As String
