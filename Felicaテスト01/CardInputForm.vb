@@ -8,6 +8,7 @@ Public Class CardInputForm
     Private Mode As Integer
     'Private CardMasterKeyString As String
     Private No As String
+    Private Idm As String
     Private th As Thread, th2 As Thread
     Private hostname As String, IP As String
     Private Old_Sql As String, Old_time As DateTime
@@ -26,7 +27,7 @@ Public Class CardInputForm
     Private Sql3 As New Queue()
 
     Private Display1 As New Display
-    Delegate Sub txtMessage_Text_Delegate(ByVal value As String)
+    Delegate Sub txtMessage_Text_Delegate(ByVal value As String, ByVal Idm As String)
     Delegate Sub Timer3_Enable_Delegate()
     Const message1 As String = "出勤／退勤等を指定してICカードをかざしてください。"
     Const TimeLag As Double = 2.0
@@ -516,7 +517,7 @@ Public Class CardInputForm
     '===============================
     ' txtMessage にメッセージを追加
     '===============================
-    Private Sub TxtMessage_Text2(ByVal value As String)
+    Private Sub TxtMessage_Text2(ByVal value As String, ByVal Idm As String)
 
         Dim db As New OdbcDbIf
 
@@ -578,8 +579,8 @@ Public Class CardInputForm
             End If
 
 
-            Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
-            Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + S1 + "',DATE '" + D1 + "',TIME '"
+            Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""Idm"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
+            Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + Idm + "','" + S1 + "',DATE '" + D1 + "',TIME '"
             Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
 
             If Sql_Command <> Sql_Command_Last Then
@@ -672,11 +673,12 @@ Public Class CardInputForm
             If pcsc.GetNoWithMac_A() Then   ' 暗号付きのカードの読み取り
                 If pcsc.IsFelica Then   ' フェリカ以外のカードは読み取らない。
                     Me.No = pcsc.S_PAD0.Trim()
+                    Me.Idm = pcsc.IDm.Trim()
                     System.Media.SystemSounds.Beep.Play()
 
                 End If
                 If Me.No > 0 Then
-                    Me.Invoke(msg_txt, New Object() {Me.No})    ' 職員番号でSQLコマンドを作成
+                    Me.Invoke(msg_txt, New Object() {Me.No, Me.Idm})    ' 職員番号でSQLコマンドを作成
                     First_flag = False                          ' 初回フラグをFalseにする。
                     flag1 = True
                 End If
