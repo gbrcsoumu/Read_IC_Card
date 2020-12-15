@@ -2,6 +2,7 @@
 Imports System.Threading
 Imports System.Net
 Imports System.Collections
+Imports Microsoft.VisualBasic.Devices
 
 Public Class CardInputForm
 
@@ -681,6 +682,7 @@ Public Class CardInputForm
                     Me.No = pcsc.S_PAD0.Trim()
                     Me.Idm = pcsc.IDm.Trim()
                     System.Media.SystemSounds.Beep.Play()
+                    My.Computer.Keyboard.SendKeys(" ", True)
 
                 End If
                 If Me.No > 0 Then
