@@ -521,7 +521,7 @@ Public Class CardInputForm
 
         Dim db As New OdbcDbIf
 
-        Dim t1 As String, D1 As String, n1 As String, S1 As String, t2 As String
+        Dim t1 As String, D1 As String, n1 As String, S1 As String, t2 As String, t3 As String
 
         Dim A As String
         Dim timenow As DateTime
@@ -531,8 +531,9 @@ Public Class CardInputForm
         If value <> "" Then
             Busy = True
             DataBaseTimer.Enabled = False
-            timenow = DateTime.Now()
+            timenow = TruncSecond(DateTime.Now())
             t1 = timenow.ToString("HH:mm:ss")
+            t3 = timenow.ToString("HH:mm")
             D1 = DateTime.Now.ToString("yyyy-MM-dd")
 
             A = "職員番号：" + value
@@ -557,7 +558,7 @@ Public Class CardInputForm
                     A += "、退勤"
                     S1 = "退勤"
             End Select
-            A += "時刻：" + t1
+            A += "時刻：" + t3
             If t2 <> "" Then
                 Select Case S1
                     Case "出勤"
@@ -598,6 +599,11 @@ Public Class CardInputForm
             DataBaseTimer.Enabled = True
         End If
     End Sub
+
+    Public Function TruncSecond(source As DateTime) As DateTime
+        Dim d = New DateTime(source.Year, source.Month, source.Day, source.Hour, source.Minute, 0, 0)
+        Return d
+    End Function
 
     Private Sub DataBaseExecute()
         Dim db As New OdbcDbIf
