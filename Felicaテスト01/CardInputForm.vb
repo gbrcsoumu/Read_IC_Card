@@ -58,7 +58,7 @@ Public Class CardInputForm
         Button_change(Me.Mode)
         'Timer2.Interval = 500
         'Timer2.Enabled = True
-        AfterInputTimer.Interval = 2000
+        AfterInputTimer.Interval = 3000
         AfterInputTimer.Enabled = False
         ModeChangeTimer.Interval = 10000
         ModeChangeTimer.Enabled = False
@@ -543,7 +543,7 @@ Public Class CardInputForm
             S1 = ""
 
             n1 = Dic3(value)
-            A += "、氏名：" + n1
+            A += "、氏名：" + n1 + "さん"
 
             Select Case Me.Mode
                 Case 1
