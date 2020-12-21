@@ -40,6 +40,7 @@ Public Class CardInputForm
     End Function
 
     Private Sub CardInputForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
         Dim n As Integer, address As String
 
         Me.Width = 1366
@@ -64,8 +65,8 @@ Public Class CardInputForm
         ModeChangeTimer.Enabled = False
         ModeChangeTimer2.Interval = 60000
         ModeChangeTimer2.Enabled = True
-        DataBaseTimer.Interval = 8333
-        DataBaseTimer.Enabled = True
+        'DataBaseTimer.Interval = 8333
+        'DataBaseTimer.Enabled = True
         First_flag = True   ' カードの読み取りが初回の場合はTrue
         mode_chage_flag = False
         hostname = System.Net.Dns.GetHostName
@@ -97,7 +98,8 @@ Public Class CardInputForm
         Sql_Command3_Last = ""
 
         SetDic1()
-
+        DataBaseTimer.Interval = 8333
+        DataBaseTimer.Enabled = False
         ReadCard()
 
     End Sub
@@ -626,7 +628,7 @@ Public Class CardInputForm
                 db.Disconnect()
             End If
         End If
-        DataBaseTimer.Enabled = True
+        DataBaseTimer.Enabled = False
 
     End Sub
 
