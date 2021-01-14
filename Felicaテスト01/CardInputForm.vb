@@ -18,6 +18,7 @@ Public Class CardInputForm
     Private Dic1 As New Dictionary(Of String, String)
     Private Dic2 As New Dictionary(Of String, String)
     Private Dic3 As New Dictionary(Of String, String)
+    Private Dic4 As New Dictionary(Of String, String)
     Private Busy As Boolean
 
     Private Sql_Command As String, Sql_Command2 As String, Sql_Command3 As String
@@ -113,7 +114,7 @@ Public Class CardInputForm
     Private Sub SetDic1()
         Dim db As New OdbcDbIf
         Dim tb As DataTable
-        Dim Sql_Command As String, n1 As String, n2 As String
+        Dim Sql_Command As String, n1 As String, n2 As String, n3 As String
         Dim i As Integer
         Dim n As Integer
         'Dim Dic1 As New Dictionary(Of String, String)
@@ -159,10 +160,18 @@ Public Class CardInputForm
                     If Dic3.Count > 0 Then
                         Dic3.Clear()
                     End If
+                    If Dic3.Count > 0 Then
+                        Dic3.Clear()
+                    End If
+                    If Dic4.Count > 0 Then
+                        Dic4.Clear()
+                    End If
                     For i = 0 To n - 1
                         n1 = tb.Rows(i).Item("職員番号").ToString()
                         n2 = tb.Rows(i).Item("氏名").ToString()
+                        n3 = tb.Rows(i).Item("Idm").ToString()
                         Dic3.Add(n1, n2)
+                        Dic4.Add(n1, n3)
                     Next
                 End If
 
@@ -531,81 +540,92 @@ Public Class CardInputForm
         Dim db As New OdbcDbIf
 
         Dim t1 As String, D1 As String, n1 As String, S1 As String, t2 As String, t3 As String
-
+        Dim Idm2 As String
         Dim A As String
         Dim timenow As DateTime
 
         value = value.Replace(vbCrLf, "")
 
-        If value <> "" And Dic3.ContainsKey(value) Then
-            Busy = True
-            DataBaseTimer.Enabled = False
-            timenow = TruncSecond(DateTime.Now())
-            t1 = timenow.ToString("HH:mm:ss")
-            t3 = timenow.ToString("HH:mm")
-            D1 = DateTime.Now.ToString("yyyy-MM-dd")
+        If value <> "" And Dic3.ContainsKey(value) And Dic4.ContainsKey(value) Then
 
-            A = "職員番号：" + value
-            t2 = Me.Label1.Text
+            Idm2 = Dic4(value)
 
-            S1 = ""
+            If Idm2 = Idm Then
+                Busy = True
+                DataBaseTimer.Enabled = False
+                timenow = TruncSecond(DateTime.Now())
+                t1 = timenow.ToString("HH:mm:ss")
+                t3 = timenow.ToString("HH:mm")
+                D1 = DateTime.Now.ToString("yyyy-MM-dd")
 
-            n1 = Dic3(value)
-            A += "、氏名：" + n1 + "さん"
+                A = "職員番号：" + value
+                t2 = Me.Label1.Text
 
-            Select Case Me.Mode
-                Case 1
-                    A += "、出勤"
-                    S1 = "出勤"
-                Case 2
-                    A += "、外出"
-                    S1 = "外出"
-                Case 3
-                    A += "、戻り"
-                    S1 = "戻り"
-                Case 4
-                    A += "、退勤"
-                    S1 = "退勤"
-            End Select
-            A += "時刻：" + t3
-            If t2 <> "" Then
-                Select Case S1
-                    Case "出勤"
-                        If t2.Substring(0, 2) = "早出" Then
-                            A += "、" + t2
-                        End If
-                    Case "退勤"
-                        If t2.Substring(0, 2) = "残業" Then
-                            A += "、" + t2
-                        End If
-                    Case "外出"
-                        If t2 = "公用外出" Or t2 = "私用外出" Then
-                            A += "、" + t2
-                        End If
-                    Case Else
-                        t2 = ""
+                S1 = ""
+
+                n1 = Dic3(value)
+                A += "、氏名：" + n1 + "さん"
+
+                Select Case Me.Mode
+                    Case 1
+                        A += "、出勤"
+                        S1 = "出勤"
+                    Case 2
+                        A += "、外出"
+                        S1 = "外出"
+                    Case 3
+                        A += "、戻り"
+                        S1 = "戻り"
+                    Case 4
+                        A += "、退勤"
+                        S1 = "退勤"
                 End Select
+                A += "時刻：" + t3
+                If t2 <> "" Then
+                    Select Case S1
+                        Case "出勤"
+                            If t2.Substring(0, 2) = "早出" Then
+                                A += "、" + t2
+                            End If
+                        Case "退勤"
+                            If t2.Substring(0, 2) = "残業" Then
+                                A += "、" + t2
+                            End If
+                        Case "外出"
+                            If t2 = "公用外出" Or t2 = "私用外出" Then
+                                A += "、" + t2
+                            End If
+                        Case Else
+                            t2 = ""
+                    End Select
 
+                End If
+
+
+                Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""Idm"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
+                Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + Idm + "','" + S1 + "',DATE '" + D1 + "',TIME '"
+                Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
+
+                If Sql_Command <> Sql_Command_Last Then
+                    Sql1.Enqueue(Sql_Command)
+                    Sql_Command_Last = Sql_Command
+                End If
+
+                Display1.On1()
+
+                Read_flag = False
+
+                Me.TextBox1.Text = A
+
+                Busy = False
+                DataBaseTimer.Enabled = True
+
+            Else
+                Read_flag = False
+                Me.TextBox1.Text = "職員番号とカード固有番号が一致しません。"
+                Busy = False
+                DataBaseTimer.Enabled = True
             End If
-
-
-            Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""Idm"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
-            Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + Idm + "','" + S1 + "',DATE '" + D1 + "',TIME '"
-            Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
-
-            If Sql_Command <> Sql_Command_Last Then
-                Sql1.Enqueue(Sql_Command)
-                Sql_Command_Last = Sql_Command
-            End If
-
-            Display1.On1()
-
-            Read_flag = False
-
-            Me.TextBox1.Text = A
-
-            Busy = False
-            DataBaseTimer.Enabled = True
         Else
             Read_flag = False
             Me.TextBox1.Text = "このカードは登録されていません"
