@@ -43,6 +43,7 @@ Partial Class CardInputForm
         Me.OfficialRadioButton = New System.Windows.Forms.RadioButton()
         Me.ModeChangeTimer2 = New System.Windows.Forms.Timer(Me.components)
         Me.DataBaseTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.DicReNewTimer = New System.Windows.Forms.Timer(Me.components)
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -235,6 +236,9 @@ Partial Class CardInputForm
         'DataBaseTimer
         '
         '
+        'DicReNewTimer
+        '
+        '
         'CardInputForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
@@ -283,4 +287,5 @@ Partial Class CardInputForm
     Friend WithEvents OfficialRadioButton As RadioButton
     Friend WithEvents ModeChangeTimer2 As Timer
     Friend WithEvents DataBaseTimer As Timer
+    Friend WithEvents DicReNewTimer As Timer
 End Class

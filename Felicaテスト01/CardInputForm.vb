@@ -98,9 +98,15 @@ Public Class CardInputForm
         Sql_Command3_Last = ""
 
         SetDic1()
+        ' 定期的に職員名簿を修正する
+        DicReNewTimer.Interval = 3600000 * 1
+        DicReNewTimer.Enabled = True
+
         DataBaseTimer.Interval = 8333
         DataBaseTimer.Enabled = False
         ReadCard()
+
+
 
     End Sub
 
@@ -531,7 +537,7 @@ Public Class CardInputForm
 
         value = value.Replace(vbCrLf, "")
 
-        If value <> "" Then
+        If value <> "" And Dic3.ContainsKey(value) Then
             Busy = True
             DataBaseTimer.Enabled = False
             timenow = TruncSecond(DateTime.Now())
@@ -598,6 +604,11 @@ Public Class CardInputForm
 
             Me.TextBox1.Text = A
 
+            Busy = False
+            DataBaseTimer.Enabled = True
+        Else
+            Read_flag = False
+            Me.TextBox1.Text = "このカードは登録されていません"
             Busy = False
             DataBaseTimer.Enabled = True
         End If
@@ -783,6 +794,12 @@ Public Class CardInputForm
         Button_change(Me.Mode)
         Me.Label1.Text = ""
         ModeChangeTimer.Enabled = False
+    End Sub
+
+    Private Sub DicReNewTimer_Tick(sender As Object, e As EventArgs) Handles DicReNewTimer.Tick
+        If Busy = False Then
+            SetDic1()
+        End If
     End Sub
 
     Private Sub OfficialRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles OfficialRadioButton.Click
