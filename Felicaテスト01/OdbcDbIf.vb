@@ -22,11 +22,11 @@ Public Class OdbcDbIf
     ''' パスワード
     ''' タイムアウト値
     ''' 
-    Public Sub Connect(Optional ByVal dbn As String = "退勤管理test01",
+    Public Function Connect(Optional ByVal dbn As String = "退勤管理test01",
                        Optional ByVal uid As String = "admin",
                        Optional ByVal pas As String = "soumu1",
-                       Optional ByVal tot As Integer = -1)
-
+                       Optional ByVal tot As Integer = -1) As Integer
+        Connect = -1
         Try
             If _con Is Nothing Then
                 _con = New OdbcConnection
@@ -46,10 +46,11 @@ Public Class OdbcDbIf
             _con.ConnectionString = cst
 
             _con.Open()
+            Connect = 0
         Catch ex As Exception
             Throw New Exception("Connect Error", ex)
         End Try
-    End Sub
+    End Function
 
     ''' 
     ''' DB切断

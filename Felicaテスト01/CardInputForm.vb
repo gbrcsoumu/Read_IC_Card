@@ -122,60 +122,61 @@ Public Class CardInputForm
         Do
             n = 0
             Try
-                db.Connect()
+                If db.Connect() = 0 Then
 
-                Sql_Command = "SELECT * FROM """ + CodeTable1 + """"
-                tb = db.ExecuteSql(Sql_Command)
-                n = tb.Rows.Count
-                If n > 0 Then
-                    If Dic1.Count > 0 Then
-                        Dic1.Clear()
+                    Sql_Command = "SELECT * FROM """ + CodeTable1 + """"
+                    tb = db.ExecuteSql(Sql_Command)
+                    n = tb.Rows.Count
+                    If n > 0 Then
+                        If Dic1.Count > 0 Then
+                            Dic1.Clear()
+                        End If
+                        For i = 0 To n - 1
+                            n1 = tb.Rows(i).Item("項目").ToString()
+                            n2 = tb.Rows(i).Item("コード").ToString()
+                            Dic1.Add(n1, n2)
+                        Next
                     End If
-                    For i = 0 To n - 1
-                        n1 = tb.Rows(i).Item("項目").ToString()
-                        n2 = tb.Rows(i).Item("コード").ToString()
-                        Dic1.Add(n1, n2)
-                    Next
+                    'Console.WriteLine(Dic1("早出0:45"))
+
+                    Sql_Command = "SELECT * FROM """ + CodeTable2 + """"
+                    tb = db.ExecuteSql(Sql_Command)
+                    n = tb.Rows.Count
+                    If n > 0 Then
+                        If Dic2.Count > 0 Then
+                            Dic2.Clear()
+                        End If
+                        For i = 0 To n - 1
+                            n1 = tb.Rows(i).Item("項目").ToString()
+                            n2 = tb.Rows(i).Item("コード").ToString()
+                            Dic2.Add(n1, n2)
+                        Next
+                    End If
+
+                    Sql_Command = "SELECT * FROM """ + MemberNameTable + """"
+                    tb = db.ExecuteSql(Sql_Command)
+                    n = tb.Rows.Count
+                    If n > 0 Then
+                        If Dic3.Count > 0 Then
+                            Dic3.Clear()
+                        End If
+                        If Dic3.Count > 0 Then
+                            Dic3.Clear()
+                        End If
+                        If Dic4.Count > 0 Then
+                            Dic4.Clear()
+                        End If
+                        For i = 0 To n - 1
+                            n1 = tb.Rows(i).Item("職員番号").ToString()
+                            n2 = tb.Rows(i).Item("氏名").ToString()
+                            n3 = tb.Rows(i).Item("Idm").ToString()
+                            Dic3.Add(n1, n2)
+                            Dic4.Add(n1, n3)
+                        Next
+                    End If
+
+                    db.Disconnect()
                 End If
-                'Console.WriteLine(Dic1("早出0:45"))
-
-                Sql_Command = "SELECT * FROM """ + CodeTable2 + """"
-                tb = db.ExecuteSql(Sql_Command)
-                n = tb.Rows.Count
-                If n > 0 Then
-                    If Dic2.Count > 0 Then
-                        Dic2.Clear()
-                    End If
-                    For i = 0 To n - 1
-                        n1 = tb.Rows(i).Item("項目").ToString()
-                        n2 = tb.Rows(i).Item("コード").ToString()
-                        Dic2.Add(n1, n2)
-                    Next
-                End If
-
-                Sql_Command = "SELECT * FROM """ + MemberNameTable + """"
-                tb = db.ExecuteSql(Sql_Command)
-                n = tb.Rows.Count
-                If n > 0 Then
-                    If Dic3.Count > 0 Then
-                        Dic3.Clear()
-                    End If
-                    If Dic3.Count > 0 Then
-                        Dic3.Clear()
-                    End If
-                    If Dic4.Count > 0 Then
-                        Dic4.Clear()
-                    End If
-                    For i = 0 To n - 1
-                        n1 = tb.Rows(i).Item("職員番号").ToString()
-                        n2 = tb.Rows(i).Item("氏名").ToString()
-                        n3 = tb.Rows(i).Item("Idm").ToString()
-                        Dic3.Add(n1, n2)
-                        Dic4.Add(n1, n3)
-                    Next
-                End If
-
-                db.Disconnect()
             Catch ex As Exception
 
             End Try
@@ -328,110 +329,112 @@ Public Class CardInputForm
             D2 = DateTime.Now.ToString("yyyy/MM/dd")
             A = "職員番号：" + value
             t2 = Me.Label1.Text
-            db.Connect()
 
-            'Sql_Command = "SELECT ""氏名"" FROM ""職員一覧"" WHERE ""職員番号"" = '" & value & "'"
-            Sql_Command = "SELECT ""氏名"" FROM """ + MemberNameTable + """ WHERE ""職員番号"" = '" & value & "'"
-            tb = db.ExecuteSql(Sql_Command)
-            n = tb.Rows.Count
 
-            'Sql_Command2 = "SELECT ""職員番号"" FROM """ + DateLogTable + """ WHERE (""職員番号"" = '" & value & "' AND ""日付"" = DATE '" + D1 + " ')"
-            Sql_Command2 = "SELECT * FROM """ + DateLogTable + """ WHERE (""職員番号"" = '" & value & "' AND ""日付"" = DATE '" + D1 + " ')"
-            tb2 = db.ExecuteSql(Sql_Command2)
-            n2 = tb2.Rows.Count
+            If db.Connect() = 0 Then
 
-            If n2 > 0 Then
-                st1 = tb2.Rows(0).Item("出勤時刻").ToString()
-                time_st = DateTime.Parse(D2 + " " + st1)
-                scode = tb2.Rows(0).Item("出勤コード")
-                ed1 = tb2.Rows(0).Item("退勤時刻").ToString()
-                time_ed = DateTime.Parse(D2 + " " + ed1)
-                ecode = tb2.Rows(0).Item("退勤コード")
-                go1 = tb2.Rows(0).Item("外出時刻").ToString()
+                'Sql_Command = "SELECT ""氏名"" FROM ""職員一覧"" WHERE ""職員番号"" = '" & value & "'"
+                Sql_Command = "SELECT ""氏名"" FROM """ + MemberNameTable + """ WHERE ""職員番号"" = '" & value & "'"
+                tb = db.ExecuteSql(Sql_Command)
+                n = tb.Rows.Count
 
-                If go1 <> "" Then
-                    time_go = DateTime.Parse(D2 + " " + go1)
-                    t3 = time_go.ToString("HH:mm:ss")
+                'Sql_Command2 = "SELECT ""職員番号"" FROM """ + DateLogTable + """ WHERE (""職員番号"" = '" & value & "' AND ""日付"" = DATE '" + D1 + " ')"
+                Sql_Command2 = "SELECT * FROM """ + DateLogTable + """ WHERE (""職員番号"" = '" & value & "' AND ""日付"" = DATE '" + D1 + " ')"
+                tb2 = db.ExecuteSql(Sql_Command2)
+                n2 = tb2.Rows.Count
+
+                If n2 > 0 Then
+                    st1 = tb2.Rows(0).Item("出勤時刻").ToString()
+                    time_st = DateTime.Parse(D2 + " " + st1)
+                    scode = tb2.Rows(0).Item("出勤コード")
+                    ed1 = tb2.Rows(0).Item("退勤時刻").ToString()
+                    time_ed = DateTime.Parse(D2 + " " + ed1)
+                    ecode = tb2.Rows(0).Item("退勤コード")
+                    go1 = tb2.Rows(0).Item("外出時刻").ToString()
+
+                    If go1 <> "" Then
+                        time_go = DateTime.Parse(D2 + " " + go1)
+                        t3 = time_go.ToString("HH:mm:ss")
+                    Else
+                        t3 = ""
+                    End If
                 Else
+                    st1 = ""
+                    time_st = timenow
+                    scode = 0
+                    ed1 = ""
+                    time_ed = timenow
+                    ecode = 0
+
                     t3 = ""
                 End If
-            Else
-                st1 = ""
-                time_st = timenow
-                scode = 0
-                ed1 = ""
-                time_ed = timenow
-                ecode = 0
-
-                t3 = ""
-            End If
 
 
-            S1 = ""
-            If n > 0 Then
-                n1 = tb.Rows(0).Item("氏名").ToString()
-                A += "、氏名：" + n1
+                S1 = ""
+                If n > 0 Then
+                    n1 = tb.Rows(0).Item("氏名").ToString()
+                    A += "、氏名：" + n1
 
-                Select Case Me.Mode
-                    Case 1
-                        A += "、出勤"
-                        S1 = "出勤"
-                    Case 2
-                        A += "、外出"
-                        S1 = "外出"
-                    Case 3
-                        A += "、戻り"
-                        S1 = "戻り"
-                    Case 4
-                        A += "、退勤"
-                        S1 = "退勤"
-                End Select
-                A += "時刻：" + t1
-                If t2 <> "" Then
-                    Select Case S1
-                        Case "出勤"
-                            If t2.Substring(0, 2) = "早出" Then
-                                A += "、" + t2
-                            End If
-                        Case "退勤"
-                            If t2.Substring(0, 2) = "残業" Then
-                                A += "、" + t2
-                            End If
-                        Case "外出"
-                            If t2 = "公用外出" Or t2 = "私用外出" Then
-                                A += "、" + t2
-                            End If
-                        Case Else
-                            t2 = ""
-                    End Select
-
-                    'If (S1 = "出勤" And t2.Substring(0, 2) = "早出") Or (S1 = "退勤" And t2.Substring(0, 2) = "残業") Then
-                    '    A += "、" + t2
-                    'Else
-                    '    t2 = ""
-                    'End If
-                End If
-
-
-                Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
-                Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + S1 + "',DATE '" + D1 + "',TIME '"
-                Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
-
-                Dim code1 As String
-                Sql_Command2 = ""
-                Sql_Command3 = ""
-                If n2 = 0 Then
                     Select Case Me.Mode
                         Case 1
-                            If t2 <> "" Then
-                                code1 = Dic1(t2)
-                            Else
-                                code1 = "0"
-                            End If
-                            Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""出勤時刻"",""出勤コード"")"
-                            Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-                            Sql_Command2 += t1 + "'," + code1 + ")"
+                            A += "、出勤"
+                            S1 = "出勤"
                         Case 2
+                            A += "、外出"
+                            S1 = "外出"
+                        Case 3
+                            A += "、戻り"
+                            S1 = "戻り"
+                        Case 4
+                            A += "、退勤"
+                            S1 = "退勤"
+                    End Select
+                    A += "時刻：" + t1
+                    If t2 <> "" Then
+                        Select Case S1
+                            Case "出勤"
+                                If t2.Substring(0, 2) = "早出" Then
+                                    A += "、" + t2
+                                End If
+                            Case "退勤"
+                                If t2.Substring(0, 2) = "残業" Then
+                                    A += "、" + t2
+                                End If
+                            Case "外出"
+                                If t2 = "公用外出" Or t2 = "私用外出" Then
+                                    A += "、" + t2
+                                End If
+                            Case Else
+                                t2 = ""
+                        End Select
+
+                        'If (S1 = "出勤" And t2.Substring(0, 2) = "早出") Or (S1 = "退勤" And t2.Substring(0, 2) = "残業") Then
+                        '    A += "、" + t2
+                        'Else
+                        '    t2 = ""
+                        'End If
+                    End If
+
+
+                    Sql_Command = "INSERT INTO """ + MemberLogTable + """ (""職員番号"",""職員名"",""種別"",""日付"",""時刻"",""特記事項"",""ホスト名"",""アドレス"")"
+                    Sql_Command += " VALUES ('" + value + "','" + n1 + "','" + S1 + "',DATE '" + D1 + "',TIME '"
+                    Sql_Command += t1 + "','" + t2 + "','" + hostname + "','" + IP + "')"
+
+                    Dim code1 As String
+                    Sql_Command2 = ""
+                    Sql_Command3 = ""
+                    If n2 = 0 Then
+                        Select Case Me.Mode
+                            Case 1
+                                If t2 <> "" Then
+                                    code1 = Dic1(t2)
+                                Else
+                                    code1 = "0"
+                                End If
+                                Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""出勤時刻"",""出勤コード"")"
+                                Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
+                                Sql_Command2 += t1 + "'," + code1 + ")"
+                            Case 2
                             'Dim OutKind As String
                             'If Me.OfficialRadioButton.Checked Then
                             '    OutKind = "公用"
@@ -441,94 +444,94 @@ Public Class CardInputForm
                             'Sql_Command2 = "INSERT INTO """ + GooutTable + """ (""職員番号"",""日付"",""時刻"",""種類"")"
                             'Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
                             'Sql_Command2 += t1 + "','" + OutKind + "')"
-                        Case 3
+                            Case 3
                             '    Sql_Command2 = "INSERT INTO """ + ReturnTable + """ (""職員番号"",""日付"",""時刻"")"
                             '    Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
                             '    Sql_Command2 += t1 + "')"
                             'Sql_Command2 = "UPDATE """ + GooutTable + """ SET ""戻り時刻"" = TIME '" + t1 + "'"
                             'Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "' AND ""時刻"" = TIME '" + t3 + "'"
-                        Case 4
-                            If t2 <> "" Then
-                                code1 = Dic2(t2)
-                            Else
-                                code1 = "0"
-                            End If
-                            Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""退勤時刻"",""退勤コード"")"
-                            Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-                            Sql_Command2 += t1 + "'," + code1 + ")"
-                    End Select
+                            Case 4
+                                If t2 <> "" Then
+                                    code1 = Dic2(t2)
+                                Else
+                                    code1 = "0"
+                                End If
+                                Sql_Command2 = "INSERT INTO """ + DateLogTable + """ (""職員番号"",""日付"",""退勤時刻"",""退勤コード"")"
+                                Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
+                                Sql_Command2 += t1 + "'," + code1 + ")"
+                        End Select
 
-                Else
-                    Select Case Me.Mode
+                    Else
+                        Select Case Me.Mode
                          'Sql_Command = "UPDATE """ + MemberNameTable + """ SET IDm = '" + Me.IDm(data_n) + "' WHERE ""職員番号"" = '" + Me.No(data_n) + "'"
-                        Case 1
-                            If t2 <> "" Then
-                                code1 = Dic1(t2)
-                            Else
-                                code1 = "0"
-                            End If
-                            Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""出勤時刻"" = TIME '" + t1 + "' ,""出勤コード"" = " + code1
-                            Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
+                            Case 1
+                                If t2 <> "" Then
+                                    code1 = Dic1(t2)
+                                Else
+                                    code1 = "0"
+                                End If
+                                Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""出勤時刻"" = TIME '" + t1 + "' ,""出勤コード"" = " + code1
+                                Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
 
-                        Case 2
-                            Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""外出時刻"" = TIME '" + t1 + "'"
-                            Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
+                            Case 2
+                                Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""外出時刻"" = TIME '" + t1 + "'"
+                                Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
 
-                            Dim OutKind As String
-                            If Me.OfficialRadioButton.Checked Then
-                                OutKind = "公外"
-                            Else
-                                OutKind = "私外"
-                            End If
-                            Sql_Command3 = "INSERT INTO """ + GooutTable + """ (""職員番号"",""日付"",""時刻"",""種類"")"
-                            Sql_Command3 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-                            Sql_Command3 += t1 + "','" + OutKind + "')"
-                        Case 3
-                            'Sql_Command2 = "INSERT INTO """ + ReturnTable + """ (""職員番号"",""日付"",""時刻"")"
-                            'Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
-                            'Sql_Command2 += t1 + "')"
-                            Sql_Command3 = "UPDATE """ + GooutTable + """ SET ""戻り時刻"" = TIME '" + t1 + "'"
-                            Sql_Command3 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "' AND ""時刻"" = TIME '" + t3 + "'"
+                                Dim OutKind As String
+                                If Me.OfficialRadioButton.Checked Then
+                                    OutKind = "公外"
+                                Else
+                                    OutKind = "私外"
+                                End If
+                                Sql_Command3 = "INSERT INTO """ + GooutTable + """ (""職員番号"",""日付"",""時刻"",""種類"")"
+                                Sql_Command3 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
+                                Sql_Command3 += t1 + "','" + OutKind + "')"
+                            Case 3
+                                'Sql_Command2 = "INSERT INTO """ + ReturnTable + """ (""職員番号"",""日付"",""時刻"")"
+                                'Sql_Command2 += " VALUES ('" + value + "', DATE '" + D1 + "', TIME '"
+                                'Sql_Command2 += t1 + "')"
+                                Sql_Command3 = "UPDATE """ + GooutTable + """ SET ""戻り時刻"" = TIME '" + t1 + "'"
+                                Sql_Command3 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "' AND ""時刻"" = TIME '" + t3 + "'"
 
-                        Case 4
-                            If t2 <> "" Then
-                                code1 = Dic2(t2)
-                            Else
-                                code1 = "0"
-                            End If
-                            Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""退勤時刻"" = TIME '" + t1 + "' ,""退勤コード"" = " + code1
-                            Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
+                            Case 4
+                                If t2 <> "" Then
+                                    code1 = Dic2(t2)
+                                Else
+                                    code1 = "0"
+                                End If
+                                Sql_Command2 = "UPDATE """ + DateLogTable + """ SET ""退勤時刻"" = TIME '" + t1 + "' ,""退勤コード"" = " + code1
+                                Sql_Command2 += "  WHERE ""職員番号"" = '" + value + "' AND ""日付"" = DATE '" + D1 + "'"
 
-                    End Select
+                        End Select
 
-                End If
-
-
-
-                ts = timenow - Old_time
-                If ts.TotalSeconds > TimeLag Then
-                    tb = db.ExecuteSql(Sql_Command)
-                    System.Diagnostics.Debug.WriteLine(Sql_Command)
-                    If Sql_Command2 <> "" Then
-                        tb2 = db.ExecuteSql(Sql_Command2)
-                        System.Diagnostics.Debug.WriteLine(Sql_Command2)
                     End If
-                    If Sql_Command3 <> "" Then
-                        tb3 = db.ExecuteSql(Sql_Command3)
-                        System.Diagnostics.Debug.WriteLine(Sql_Command3)
+
+
+
+                    ts = timenow - Old_time
+                    If ts.TotalSeconds > TimeLag Then
+                        tb = db.ExecuteSql(Sql_Command)
+                        System.Diagnostics.Debug.WriteLine(Sql_Command)
+                        If Sql_Command2 <> "" Then
+                            tb2 = db.ExecuteSql(Sql_Command2)
+                            System.Diagnostics.Debug.WriteLine(Sql_Command2)
+                        End If
+                        If Sql_Command3 <> "" Then
+                            tb3 = db.ExecuteSql(Sql_Command3)
+                            System.Diagnostics.Debug.WriteLine(Sql_Command3)
+                        End If
+                        Old_time = timenow
                     End If
-                    Old_time = timenow
+
+                    Display1.On1()
+
+                    Read_flag = False
+                Else
+                    A = "カードが読み取れません"
                 End If
-
-                Display1.On1()
-
-                Read_flag = False
-            Else
-                A = "カードが読み取れません"
+                Me.TextBox1.Text = A
+                db.Disconnect()
             End If
-            Me.TextBox1.Text = A
-            db.Disconnect()
-
         End If
     End Sub
 
@@ -648,17 +651,18 @@ Public Class CardInputForm
         If Busy = False Then
             Dim n As Integer = Sql1.Count
             If n > 0 Then
-                db.Connect()
-                For i As Integer = 0 To n - 1
-                    com1 = Sql1.Dequeue()
+                If db.Connect() = 0 Then
+                    For i As Integer = 0 To n - 1
+                        com1 = Sql1.Dequeue()
 
-                    tb = db.ExecuteSql(com1)
-                    System.Diagnostics.Debug.WriteLine(com1)
+                        tb = db.ExecuteSql(com1)
+                        System.Diagnostics.Debug.WriteLine(com1)
 
-                Next
-                db.Disconnect()
+                    Next
+                    db.Disconnect()
+                End If
             End If
-        End If
+            End If
         DataBaseTimer.Enabled = False
 
     End Sub
